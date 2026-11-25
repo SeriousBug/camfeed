@@ -82,7 +82,7 @@ final class SinkWriter {
 		guard scale(pixelBuffer, into: destination) else { return }
 
 		var timing = CMSampleTimingInfo(
-			duration: .invalid,
+			duration: CMTime(value: 1, timescale: 30),
 			presentationTimeStamp: CMClockGetTime(CMClockGetHostTimeClock()),
 			decodeTimeStamp: .invalid
 		)

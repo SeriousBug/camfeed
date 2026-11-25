@@ -67,7 +67,11 @@ final class CameraStreamSource: NSObject, StreamOwner {
 		return streamProperties
 	}
 
-	func setStreamProperties(_ streamProperties: CMIOExtensionStreamProperties) throws {}
+	func setStreamProperties(_ streamProperties: CMIOExtensionStreamProperties) throws {
+		if let index = streamProperties.activeFormatIndex {
+			camfeedLog("stream: client selected format \(index)")
+		}
+	}
 
 	func authorizedToStartStream(for client: CMIOExtensionClient) -> Bool {
 		true
@@ -98,7 +102,7 @@ final class CameraStreamSource: NSObject, StreamOwner {
 		let hostTime = UInt64(
 			max(0, CMTimeConvertScale(presentationTime, timescale: 1_000_000_000, method: .default).value)
 		)
-		stream.send(sampleBuffer, discontinuity: .unknown, hostTimeInNanoseconds: hostTime)
+		stream.send(sampleBuffer, discontinuity: [], hostTimeInNanoseconds: hostTime)
 		framesSent += 1
 		if framesSent == 300 {
 			camfeedLog("stream: sent \(framesSent) frames")
