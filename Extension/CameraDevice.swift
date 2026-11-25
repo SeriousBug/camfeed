@@ -13,9 +13,11 @@ private let virtualTransportType = 0x7669_7274 // 'virt'
 final class CameraDevice: NSObject, CMIOExtensionDeviceSource {
 	private(set) var device: CMIOExtensionDevice!
 	private let model: String
+	private let owners: [StreamOwner]
 
 	init(localizedName: String, model: String, owners: [StreamOwner]) {
 		self.model = model
+		self.owners = owners
 		super.init()
 		device = CMIOExtensionDevice(
 			localizedName: localizedName,

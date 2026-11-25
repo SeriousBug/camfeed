@@ -66,6 +66,7 @@ for device in providerSource.devices {
 	}
 }
 
+camfeedLog("provider: publishing \(providerSource.devices.count) devices")
 CMIOExtensionProvider.startService(provider: provider)
 camfeedLog("provider: service started")
 CFRunLoopRun()
