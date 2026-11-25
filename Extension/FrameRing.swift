@@ -13,17 +13,13 @@ final class FrameRing {
 
 	func open(create: Bool) {
 		guard base == nil else { return }
-		guard let container = camfeedSharedContainer() else {
-			camfeedLog("ring: no group container")
-			return
-		}
-		try? FileManager.default.createDirectory(at: container, withIntermediateDirectories: true)
-		let path = container.appendingPathComponent("camera.ring").path
+		CamfeedPaths.prepareDirectory()
+		let path = CamfeedPaths.ringFile.path
 
 		let fd = path.withCString { camfeed_ring_open($0, create ? 1 : 0) }
 		guard fd >= 0 else {
 			if create {
-				camfeedLog("ring: open failed for \(path)")
+				camfeedLog("ring: open failed for \(path) errno=\(errno)")
 			}
 			return
 		}

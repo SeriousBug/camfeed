@@ -26,7 +26,12 @@ int camfeed_ring_open(const char *path, int create)
 	if (create) {
 		flags |= O_CREAT;
 	}
-	return open(path, flags, 0644);
+	int fd = open(path, flags, 0666);
+	/* Producer and consumer run under different uids, so whichever opened first must not lock the other out. */
+	if (fd >= 0) {
+		fchmod(fd, 0666);
+	}
+	return fd;
 }
 
 int camfeed_ring_prepare(int fd, void *base)

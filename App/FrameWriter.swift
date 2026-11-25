@@ -12,19 +12,20 @@ final class FrameWriter {
 	private var fileDescriptor: Int32 = -1
 	private var cachedTarget = (width: 0, height: 0)
 	private var writtenFrames = 0
+	private var receivedFrames = 0
 
 	private static let fallbackTarget = (width: 1920, height: 1080)
 
 	var isReady: Bool { base != nil }
 
 	func open() {
-		guard base == nil, let container = camfeedSharedContainer() else { return }
-		try? FileManager.default.createDirectory(at: container, withIntermediateDirectories: true)
-		let path = container.appendingPathComponent("camera.ring").path
+		guard base == nil else { return }
+		CamfeedPaths.prepareDirectory()
+		let path = CamfeedPaths.ringFile.path
 
 		let fd = path.withCString { camfeed_ring_open($0, 1) }
 		guard fd >= 0 else {
-			camfeedLog("ring: open failed for \(path)")
+			camfeedLog("ring: open failed for \(path) errno=\(errno)")
 			return
 		}
 		guard let mapped = camfeed_ring_map(fd) else {
@@ -44,8 +45,19 @@ final class FrameWriter {
 
 	func write(_ pixelBuffer: CVPixelBuffer) {
 		guard let base else { return }
+		if receivedFrames == 0 {
+			camfeedLog(
+				"ring: first buffer \(CVPixelBufferGetWidth(pixelBuffer))x\(CVPixelBufferGetHeight(pixelBuffer))"
+			)
+		}
+		receivedFrames += 1
 		let target = targetSize()
-		guard target.width > 0, target.height > 0 else { return }
+		guard target.width > 0, target.height > 0 else {
+			if receivedFrames % 150 == 1 {
+				camfeedLog("ring: no client format requested yet, dropping buffer")
+			}
+			return
+		}
 
 		CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
 		defer { CVPixelBufferUnlockBaseAddress(pixelBuffer, .readOnly) }

@@ -11,17 +11,9 @@ let camfeedGroupIdentifier = "63QQLP356Q.dev.bgenc.camfeed"
 
 private let camfeedLogger = Logger(subsystem: "dev.bgenc.camfeed", category: "camfeed")
 
-func camfeedSharedContainer() -> URL? {
-	FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: camfeedGroupIdentifier)
-}
-
-func camfeedLogPath() -> URL? {
-	camfeedSharedContainer()?.appendingPathComponent("camfeed.log")
-}
-
 func camfeedLog(_ message: String) {
 	camfeedLogger.log("\(message, privacy: .public)")
-	guard let url = camfeedLogPath() else { return }
+	let url = CamfeedPaths.logFile
 	let formatter = ISO8601DateFormatter()
 	let line = "\(formatter.string(from: Date())) [\(ProcessInfo.processInfo.processName)] \(message)\n"
 	guard let data = line.data(using: .utf8) else { return }

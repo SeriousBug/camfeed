@@ -315,7 +315,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedApp.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/CamfeedApp-Info.plist";
@@ -335,7 +335,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedApp.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/CamfeedApp-Info.plist";
@@ -354,7 +354,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedCamera.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/CamfeedCamera-Info.plist";
@@ -375,7 +375,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedCamera.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/CamfeedCamera-Info.plist";

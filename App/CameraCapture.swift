@@ -32,41 +32,81 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 	override init() {
 		super.init()
 		writer.open()
+		NotificationCenter.default.addObserver(
+			forName: .AVCaptureSessionRuntimeError,
+			object: session,
+			queue: .main
+		) { [weak self] notification in
+			guard let error = notification.userInfo?[AVCaptureSessionErrorKey] as? Error else { return }
+			camfeedLog("capture: runtime error: \(error.localizedDescription)")
+			self?.state = .failed(error.localizedDescription)
+		}
 	}
 
-	/// Continuity cameras first: those are what this app exists for.
+	/// Camera access can be granted in System Settings while the app is running.
+	func clearPermissionFailure() {
+		if case .needsPermission = state, hasCameraPermission {
+			state = .idle
+		}
+	}
+
+	/// Continuity cameras first: those are what this app exists for. The extension's own device is
+	/// filtered out, or picking it would feed the virtual camera into itself.
 	static func availableCameras() -> [AVCaptureDevice] {
 		let session = AVCaptureDevice.DiscoverySession(
 			deviceTypes: [.continuityCamera, .external, .builtInWideAngleCamera, .deskViewCamera],
 			mediaType: .video,
 			position: .unspecified
 		)
-		return session.devices.sorted { first, second in
-			if first.isContinuityCamera != second.isContinuityCamera {
-				return first.isContinuityCamera
+		return session.devices
+			.filter { $0.modelID != Self.virtualCameraModel }
+			.sorted { first, second in
+				if first.isContinuityCamera != second.isContinuityCamera {
+					return first.isContinuityCamera
+				}
+				return first.localizedName.localizedCompare(second.localizedName) == .orderedAscending
 			}
-			return first.localizedName.localizedCompare(second.localizedName) == .orderedAscending
-		}
 	}
+
+	static let virtualCameraModel = "Camfeed"
 
 	var runningDeviceID: String? { currentDevice?.uniqueID }
 
+	/// True once the user has granted camera access, which they may do after the app asked.
+	var hasCameraPermission: Bool {
+		AVCaptureDevice.authorizationStatus(for: .video) == .authorized
+	}
+
 	func start(_ device: AVCaptureDevice) {
-		guard AVCaptureDevice.authorizationStatus(for: .video) == .authorized else {
-			requestAccess { [weak self] granted in
-				guard let self else { return }
-				if granted {
-					self.start(device)
-				} else {
-					self.state = .needsPermission
+		let status = AVCaptureDevice.authorizationStatus(for: .video)
+		guard status == .authorized else {
+			if status == .notDetermined {
+				requestAccess { [weak self] granted in
+					guard let self else { return }
+					if granted {
+						self.start(device)
+					} else {
+						self.state = .needsPermission
+					}
 				}
+			} else {
+				camfeedLog("capture: camera access is \(status == .restricted ? "restricted" : "denied")")
+				state = .needsPermission
 			}
 			return
 		}
 
 		queue.async { [self] in
+			if currentDevice?.uniqueID == device.uniqueID, session.isRunning {
+				camfeedLog("capture: already running on \(device.localizedName)")
+				state = .running(device.localizedName)
+				return
+			}
+			camfeedLog("capture: starting \(device.localizedName)")
 			session.beginConfiguration()
-			session.sessionPreset = .high
+			if session.canSetSessionPreset(.high) {
+				session.sessionPreset = .high
+			}
 
 			if let existing = currentInput {
 				session.removeInput(existing)
@@ -102,6 +142,10 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
 			if !session.isRunning {
 				session.startRunning()
+			}
+			guard session.isRunning else {
+				state = .failed("\(device.localizedName) did not start")
+				return
 			}
 			camfeedLog("capture: running on \(device.localizedName)")
 			state = .running(device.localizedName)

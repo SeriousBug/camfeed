@@ -8,5 +8,9 @@
 	<array>
 		<string>63QQLP356Q.dev.bgenc.camfeed</string>
 	</array>
+	<key>com.apple.security.temporary-exception.files.absolute-path.read-write</key>
+	<array>
+		<string>/Users/Shared/Camfeed/</string>
+	</array>
 </dict>
 </plist>
