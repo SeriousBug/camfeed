@@ -36,6 +36,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 		watcher.onChange = { [weak self] _ in
 			self?.syncCaptureToViewers()
 		}
+		watcher.onDeviceListChange = { [weak self] in
+			self?.pollCameras()
+		}
+		watcher.start()
 
 		refreshCameras()
 		installer.install()
