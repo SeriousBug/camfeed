@@ -7,10 +7,10 @@ import CoreMediaIO
 import Foundation
 
 final class ProviderSource: NSObject, CMIOExtensionProviderSource {
-	private(set) var device: CameraDevice
+	private(set) var devices: [CameraDevice]
 
-	init(device: CameraDevice) {
-		self.device = device
+	init(devices: [CameraDevice]) {
+		self.devices = devices
 		super.init()
 	}
 
@@ -42,16 +42,28 @@ final class ProviderSource: NSObject, CMIOExtensionProviderSource {
 	}
 }
 
-let device = CameraDevice(localizedName: "Camfeed Camera")
-let providerSource = ProviderSource(device: device)
+let frames = LatestFrame()
+let output = CameraDevice(
+	localizedName: "Camfeed Camera",
+	model: "Camfeed",
+	owners: [CameraStreamSource(frames: frames)]
+)
+let input = CameraDevice(
+	localizedName: "Camfeed Input",
+	model: "CamfeedInput",
+	owners: [CameraSinkStream(frames: frames)]
+)
+let providerSource = ProviderSource(devices: [output, input])
 
 let provider = CMIOExtensionProvider(source: providerSource, clientQueue: nil)
 
-do {
-	try provider.addDevice(device.device)
-} catch {
-	camfeedLog("provider: addDevice failed: \(error.localizedDescription)")
-	exit(1)
+for device in providerSource.devices {
+	do {
+		try provider.addDevice(device.device)
+	} catch {
+		camfeedLog("provider: addDevice failed: \(error.localizedDescription)")
+		exit(1)
+	}
 }
 
 CMIOExtensionProvider.startService(provider: provider)

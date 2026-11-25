@@ -1,6 +1,6 @@
 //
 //  CameraCapture.swift
-//  Runs an AVCaptureSession on the iPhone camera and hands its frames to FrameWriter.
+//  Runs an AVCaptureSession on the iPhone camera and hands its frames to the camera extension.
 //
 
 import AVFoundation
@@ -16,7 +16,7 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
 	private let session = AVCaptureSession()
 	private let queue = DispatchQueue(label: "dev.bgenc.camfeed.capture")
-	private let writer = FrameWriter()
+	private let sink = SinkWriter()
 	private var currentInput: AVCaptureDeviceInput?
 	private var currentDevice: AVCaptureDevice?
 
@@ -31,7 +31,6 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 
 	override init() {
 		super.init()
-		writer.open()
 		NotificationCenter.default.addObserver(
 			forName: .AVCaptureSessionRuntimeError,
 			object: session,
@@ -59,7 +58,7 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 			position: .unspecified
 		)
 		return session.devices
-			.filter { $0.modelID != Self.virtualCameraModel }
+			.filter { !Self.virtualCameraModels.contains($0.modelID) }
 			.sorted { first, second in
 				if first.isContinuityCamera != second.isContinuityCamera {
 					return first.isContinuityCamera
@@ -69,6 +68,7 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 	}
 
 	static let virtualCameraModel = "Camfeed"
+	static let virtualCameraModels: Set<String> = [virtualCameraModel, "CamfeedInput"]
 
 	var runningDeviceID: String? { currentDevice?.uniqueID }
 
@@ -157,6 +157,7 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 			if session.isRunning {
 				session.stopRunning()
 			}
+			sink.stop()
 			state = .idle
 		}
 	}
@@ -175,6 +176,7 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 		from connection: AVCaptureConnection
 	) {
 		guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-		writer.write(pixelBuffer)
+		guard sink.startIfNeeded() else { return }
+		sink.write(pixelBuffer)
 	}
 }

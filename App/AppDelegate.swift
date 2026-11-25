@@ -199,8 +199,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	}
 
 	@objc private func showLog() {
-		CamfeedPaths.prepareDirectory()
-		NSWorkspace.shared.open(CamfeedPaths.sharedDirectory)
+		guard let container = FileManager.default
+			.containerURL(forSecurityApplicationGroupIdentifier: camfeedGroupIdentifier) else { return }
+		NSWorkspace.shared.open(container)
 	}
 
 	private func open(_ urlString: String) {

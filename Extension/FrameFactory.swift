@@ -1,6 +1,6 @@
 //
 //  FrameFactory.swift
-//  Turns ring buffer bytes into CMSampleBuffers, and draws the idle frame shown when the app has no camera.
+//  Builds the format clients see and draws the idle frame shown while no frames arrive.
 //
 
 import CoreGraphics
@@ -43,35 +43,6 @@ enum FrameFactory {
 			&pixelBuffer
 		)
 		return status == kCVReturnSuccess ? pixelBuffer : nil
-	}
-
-	/// Wraps ring bytes without copying. The mapping lives for the extension's lifetime.
-	static func sampleBuffer(
-		wrapping bytes: UnsafeMutableRawPointer,
-		width: Int,
-		height: Int,
-		formatDescription: CMFormatDescription,
-		presentationTime: CMTime
-	) -> CMSampleBuffer? {
-		var pixelBuffer: CVPixelBuffer?
-		let attributes: [CFString: Any] = [
-			kCVPixelBufferIOSurfacePropertiesKey: [:] as [String: Any],
-			kCVPixelBufferBytesPerRowAlignmentKey: 64,
-		]
-		let status = CVPixelBufferCreateWithBytes(
-			kCFAllocatorDefault,
-			width,
-			height,
-			kCVPixelFormatType_32BGRA,
-			bytes,
-			width * 4,
-			nil,
-			nil,
-			attributes as CFDictionary,
-			&pixelBuffer
-		)
-		guard status == kCVReturnSuccess, let pixelBuffer else { return nil }
-		return wrap(pixelBuffer, formatDescription: formatDescription, presentationTime: presentationTime)
 	}
 
 	static func wrap(

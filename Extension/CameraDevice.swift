@@ -1,6 +1,7 @@
 //
 //  CameraDevice.swift
-//  The single virtual device the extension publishes, with one BGRA video stream.
+//  One virtual device. The extension publishes two: the output device clients watch and the input
+//  device the app feeds, so the app's own writing does not look like somebody watching.
 //
 
 import CoreMediaIO
@@ -11,32 +12,31 @@ private let virtualTransportType = 0x7669_7274 // 'virt'
 
 final class CameraDevice: NSObject, CMIOExtensionDeviceSource {
 	private(set) var device: CMIOExtensionDevice!
-	private(set) var streamSource: CameraStreamSource!
+	private let model: String
 
-	init(localizedName: String) {
+	init(localizedName: String, model: String, owners: [StreamOwner]) {
+		self.model = model
 		super.init()
-		let streamSource = CameraStreamSource()
-		self.streamSource = streamSource
-
-		let stream = CMIOExtensionStream(
-			localizedName: localizedName,
-			streamID: UUID(),
-			direction: .source,
-			clockType: .hostTime,
-			source: streamSource
-		)
-		streamSource.stream = stream
-
 		device = CMIOExtensionDevice(
 			localizedName: localizedName,
 			deviceID: UUID(),
 			legacyDeviceID: nil,
 			source: self
 		)
-		do {
-			try device.addStream(stream)
-		} catch {
-			camfeedLog("device: addStream failed: \(error.localizedDescription)")
+		for owner in owners {
+			let stream = CMIOExtensionStream(
+				localizedName: localizedName,
+				streamID: UUID(),
+				direction: owner.direction,
+				clockType: .hostTime,
+				source: owner
+			)
+			owner.stream = stream
+			do {
+				try device.addStream(stream)
+			} catch {
+				camfeedLog("device: addStream failed: \(error.localizedDescription)")
+			}
 		}
 	}
 
@@ -44,10 +44,12 @@ final class CameraDevice: NSObject, CMIOExtensionDeviceSource {
 		[.deviceModel, .deviceTransportType, .deviceIsSuspended]
 	}
 
-	func deviceProperties(forProperties properties: Set<CMIOExtensionProperty>) throws -> CMIOExtensionDeviceProperties {
+	func deviceProperties(
+		forProperties properties: Set<CMIOExtensionProperty>
+	) throws -> CMIOExtensionDeviceProperties {
 		let propertiesDictionary = CMIOExtensionDeviceProperties(dictionary: [:])
 		if properties.contains(.deviceModel) {
-			propertiesDictionary.model = "Camfeed"
+			propertiesDictionary.model = model
 		}
 		if properties.contains(.deviceTransportType) {
 			propertiesDictionary.transportType = virtualTransportType

@@ -315,7 +315,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedApp.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/CamfeedApp-Info.plist";
@@ -326,7 +326,6 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.bgenc.camfeed;
 				PRODUCT_NAME = Camfeed;
-				SWIFT_OBJC_BRIDGING_HEADER = Shared/CamfeedRing.h;
 			};
 			name = Debug;
 		};
@@ -335,7 +334,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedApp.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/CamfeedApp-Info.plist";
@@ -346,7 +345,6 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.bgenc.camfeed;
 				PRODUCT_NAME = Camfeed;
-				SWIFT_OBJC_BRIDGING_HEADER = Shared/CamfeedRing.h;
 			};
 			name = Release;
 		};
@@ -354,7 +352,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedCamera.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/CamfeedCamera-Info.plist";
@@ -367,7 +365,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = dev.bgenc.camfeed.camera;
 				PRODUCT_NAME = "dev.bgenc.camfeed.camera";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = Shared/CamfeedRing.h;
 			};
 			name = Debug;
 		};
@@ -375,7 +372,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedCamera.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Config/CamfeedCamera-Info.plist";
@@ -388,7 +385,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = dev.bgenc.camfeed.camera;
 				PRODUCT_NAME = "dev.bgenc.camfeed.camera";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = Shared/CamfeedRing.h;
 			};
 			name = Release;
 		};
