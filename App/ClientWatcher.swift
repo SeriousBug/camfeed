@@ -13,6 +13,7 @@ final class ClientWatcher {
 	private var listener: CMIOObjectPropertyListenerBlock?
 	private var deviceListListener: CMIOObjectPropertyListenerBlock?
 	private var loggedMissingDevice = false
+	private(set) var hasDevice = false
 	private let queue = DispatchQueue(label: "dev.bgenc.camfeed.watch")
 
 	private(set) var isActive = false {
@@ -64,9 +65,11 @@ final class ClientWatcher {
 				camfeedLog("watch: the camera extension is not publishing devices yet")
 			}
 			isActive = false
+			hasDevice = false
 			return
 		}
 		loggedMissingDevice = false
+		hasDevice = true
 		if found != device {
 			removeListener()
 			addListener(for: found)

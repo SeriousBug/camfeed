@@ -15,6 +15,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	private var rescanTimer: Timer?
 	private var preferredDeviceID: String?
 	private var stopWorkItem: DispatchWorkItem?
+	private var activationRetries = 0
+	private var nextActivationRetry = Date.distantPast
 
 	func applicationDidFinishLaunching(_ notification: Notification) {
 		camfeedLog("app: launched")
@@ -68,6 +70,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 		}
 		watcher.refresh()
 		syncCaptureToViewers()
+		retryActivationIfNeeded()
+	}
+
+	/// Replacing the extension races the CMIO daemon: activation reports success while launchd removes
+	/// the job it just tried to submit, and the extension then never starts. Asking again once that is
+	/// over rebuilds the job.
+	private func retryActivationIfNeeded() {
+		if watcher.hasDevice {
+			activationRetries = 0
+			return
+		}
+		guard installer.state == .active, activationRetries < 4 else { return }
+		let now = Date()
+		guard now >= nextActivationRetry else { return }
+		activationRetries += 1
+		nextActivationRetry = now.addingTimeInterval(4)
+		camfeedLog("extension: no devices found, asking again (\(activationRetries))")
+		installer.install()
 	}
 
 	/// The iPhone link is only held while something is watching, so the phone is not kept awake and
