@@ -12,7 +12,7 @@
 
 /* Begin PBXFileReference section */
 		CF0000000000000000000010 /* Camfeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Camfeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CF0000000000000000000011 /* CamfeedCamera.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = CamfeedCamera.systemextension; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF0000000000000000000011 /* CamfeedCamera.systemextension */ = {isa = PBXFileReference; explicitFileType = "wrapper.system-extension"; includeInIndex = 0; path = "dev.bgenc.camfeed.camera.systemextension"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF0000000000000000000012 /* CamfeedApp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CamfeedApp-Info.plist"; sourceTree = "<group>"; };
 		CF0000000000000000000013 /* CamfeedCamera-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CamfeedCamera-Info.plist"; sourceTree = "<group>"; };
 		CF0000000000000000000014 /* CamfeedApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CamfeedApp.entitlements; sourceTree = "<group>"; };
@@ -314,8 +314,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedApp.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
@@ -336,8 +334,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedApp.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
@@ -358,8 +354,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedCamera.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -371,7 +365,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.bgenc.camfeed.camera;
-				PRODUCT_NAME = CamfeedCamera;
+				PRODUCT_NAME = "dev.bgenc.camfeed.camera";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = Shared/CamfeedRing.h;
 			};
@@ -381,8 +375,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Config/CamfeedCamera.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 63QQLP356Q;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -394,7 +386,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.bgenc.camfeed.camera;
-				PRODUCT_NAME = CamfeedCamera;
+				PRODUCT_NAME = "dev.bgenc.camfeed.camera";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = Shared/CamfeedRing.h;
 			};

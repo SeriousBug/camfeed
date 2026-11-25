@@ -69,7 +69,7 @@ final class CameraStreamSource: NSObject, CMIOExtensionStreamSource {
 	}
 
 	func setStreamProperties(_ streamProperties: CMIOExtensionStreamProperties) throws {
-		if let index = streamProperties.activeFormatIndex as? Int, streamFormats.indices.contains(index) {
+		if let index = streamProperties.activeFormatIndex, streamFormats.indices.contains(index) {
 			activeFormatIndex = index
 			publishRequestedFormat()
 			idleBuffers.removeAll()
