@@ -158,6 +158,8 @@ final class CameraCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
 				session.stopRunning()
 			}
 			sink.stop()
+			currentInput = nil
+			currentDevice = nil
 			state = .idle
 		}
 	}
