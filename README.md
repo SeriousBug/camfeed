@@ -54,3 +54,10 @@ The extension publishes the format that the client selected through the same hea
 - The ring has no flow control beyond the four slots; a client that falls more than 100 ms behind sees a newer frame than the one it asked for.
 - iPhone controls (zoom, focus, exposure, torch) are not wired up yet.
 - The idle frame is redrawn only when the stream format changes.
+
+## Two things macOS insists on
+
+The extension bundle directory must be named exactly `<CFBundleIdentifier>.systemextension`. Any other name makes `OSSystemExtensionRequest` fail before it leaves the app with `Extension not found in App bundle`.
+
+The build must be notarized. An unnotarized Developer ID extension is listed by `systemextensionsctl` but activation fails with `code signature invalid`, while `spctl` reports `rejected, source=Unnotarized Developer ID`. Notarizing the DMG covers the app and the nested extension; stapling the app is not needed, OBS ships without it too.
+
